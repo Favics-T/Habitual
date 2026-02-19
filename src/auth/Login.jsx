@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext'
 import Input from './component/Input'
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 export default function Login() {
     const {formData,handleInputChange,login} = useContext(AuthContext)
@@ -57,6 +58,10 @@ export default function Login() {
     Login
   </button>
 </form>
+
+
+    <p className='text-center'>No Account? <Link to='/signup'><span className='text-lg font-bold text-[#1c352d]'>Sign up</span></Link></p>
+
 
     </div>
     

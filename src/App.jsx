@@ -6,7 +6,7 @@ import SignUp from './auth/SignUp';
 
 const App = () => {
   return (
-    <Router>
+    
       <Routes>
         {/* Redirect root to /login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -20,7 +20,7 @@ const App = () => {
         {/* Fallback 404 */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-    </Router>
+    
   );
 };
 

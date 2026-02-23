@@ -9,7 +9,7 @@ function SocialOption({ icon, text }) {
   return (
     <button
       type="button"
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 p-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 p-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm"
     >
       <span className="text-lg">{icon}</span>
       <span>{text}</span>
@@ -21,11 +21,11 @@ export default function Login() {
   const { formData, handleInputChange, login } = useContext(AuthContext);
 
   return (
-    <div className="flex flex-col gap-6 text-slate-900">
+    <div className="flex flex-col gap-5 text-slate-900 sm:gap-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Welcome Back</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Welcome Back</h1>
         <p className="text-sm text-slate-500">Log in and continue your habit streak.</p>
-        <div className="mt-4 flex gap-3">
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
           <SocialOption text="Google" icon={<FcGoogle />} />
           <SocialOption text="Facebook" icon={<FaFacebookF />} />
         </div>

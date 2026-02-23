@@ -138,13 +138,13 @@ export default function Dashboard() {
   const stats = { total, doneToday, completionRate, bestStreak };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-8 md:px-8">
+    <div className="min-h-screen bg-slate-100 px-3 py-6 sm:px-4 sm:py-8 md:px-8">
       <div className="mx-auto max-w-5xl space-y-6">
-        <header className="rounded-3xl bg-gradient-to-r from-emerald-700 to-teal-600 p-6 text-white shadow-lg">
+        <header className="rounded-2xl bg-gradient-to-r from-emerald-700 to-teal-600 p-4 text-white shadow-lg sm:rounded-3xl sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm text-emerald-100">Welcome back</p>
-              <h1 className="text-3xl font-bold">{currentUser?.name || 'Habitual User'}</h1>
+              <h1 className="text-2xl font-bold sm:text-3xl">{currentUser?.name || 'Habitual User'}</h1>
               {goal && (
                 <p className="mt-2 text-sm text-emerald-100">
                   Goal: <span className="font-semibold text-white">{goal}</span>
@@ -164,19 +164,19 @@ export default function Dashboard() {
         <section className="grid gap-4 md:grid-cols-4">
           <article className="rounded-2xl bg-white p-4 shadow-sm">
             <p className="text-sm text-slate-500">Total Habits</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">{stats.total}</h2>
+            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.total}</h2>
           </article>
           <article className="rounded-2xl bg-white p-4 shadow-sm">
             <p className="text-sm text-slate-500">Completed Today</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">{stats.doneToday}</h2>
+            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.doneToday}</h2>
           </article>
           <article className="rounded-2xl bg-white p-4 shadow-sm">
             <p className="text-sm text-slate-500">Daily Completion</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">{stats.completionRate}%</h2>
+            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.completionRate}%</h2>
           </article>
           <article className="rounded-2xl bg-white p-4 shadow-sm">
             <p className="text-sm text-slate-500">Best Streak</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">{stats.bestStreak} days</h2>
+            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.bestStreak} days</h2>
           </article>
         </section>
 
@@ -233,14 +233,14 @@ export default function Dashboard() {
 
         <section className="rounded-2xl bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold text-slate-900">Today&apos;s Habits</h2>
-            <div className="flex gap-2">
+            <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">Today&apos;s Habits</h2>
+            <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto">
               {['all', 'pending', 'completed'].map((value) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setFilter(value)}
-                  className={`rounded-xl px-3 py-1 text-sm font-semibold capitalize ${
+                  className={`rounded-xl px-2 py-1 text-xs font-semibold capitalize sm:px-3 sm:text-sm ${
                     filter === value
                       ? 'bg-emerald-700 text-white'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -264,22 +264,26 @@ export default function Dashboard() {
               return (
                 <article
                   key={habit.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 p-4"
+                  className="flex flex-col gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0 flex-1">
-                    <h3 className={`font-semibold ${isDoneToday ? 'text-slate-400 line-through' : 'text-slate-900'}`}>
+                    <h3
+                      className={`text-sm font-semibold sm:text-base ${
+                        isDoneToday ? 'text-slate-400 line-through' : 'text-slate-900'
+                      }`}
+                    >
                       {habit.name}
                     </h3>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-xs text-slate-500 sm:text-sm">
                       {habit.category} | {habit.frequency} | Streak: {streak} day{streak === 1 ? '' : 's'}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:items-center">
                     <button
                       type="button"
                       onClick={() => handleToggleToday(habit.id)}
-                      className={`rounded-xl px-3 py-1 text-sm font-semibold ${
+                      className={`rounded-xl px-3 py-2 text-sm font-semibold sm:py-1 ${
                         isDoneToday
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -290,14 +294,14 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => handleEdit(habit)}
-                      className="rounded-xl bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800 hover:bg-amber-200"
+                      className="rounded-xl bg-amber-100 px-3 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-200 sm:py-1"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(habit.id)}
-                      className="rounded-xl bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-700 hover:bg-rose-200"
+                      className="rounded-xl bg-rose-100 px-3 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-200 sm:py-1"
                     >
                       Delete
                     </button>

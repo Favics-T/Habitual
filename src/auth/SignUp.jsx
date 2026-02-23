@@ -9,7 +9,7 @@ function SocialOption({ icon, text }) {
   return (
     <button
       type="button"
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 p-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 p-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm"
     >
       <span className="text-lg">{icon}</span>
       <span>{text}</span>
@@ -21,11 +21,11 @@ export default function SignUp() {
   const { formData, handleInputChange, register } = useContext(AuthContext);
 
   return (
-    <div className="flex flex-col gap-6 text-slate-900">
+    <div className="flex flex-col gap-5 text-slate-900 sm:gap-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Create Account</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Create Account</h1>
         <p className="text-sm text-slate-500">Start building your daily momentum.</p>
-        <div className="mt-4 flex gap-3">
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
           <SocialOption text="Google" icon={<FcGoogle />} />
           <SocialOption text="Facebook" icon={<FaFacebookF />} />
         </div>

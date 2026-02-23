@@ -1,5 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../context/auth-context';
 
 const HABITS_KEY = 'habitual_habits';
 
@@ -120,26 +120,22 @@ export default function Dashboard() {
     setForm({ name: '', category: '', frequency: 'daily' });
   };
 
-  const visibleHabits = useMemo(() => {
-    if (filter === 'completed') {
-      return habits.filter((habit) => habit.completedDates.includes(today));
-    }
-    if (filter === 'pending') {
-      return habits.filter((habit) => !habit.completedDates.includes(today));
-    }
-    return habits;
-  }, [filter, habits, today]);
+  let visibleHabits = habits;
+  if (filter === 'completed') {
+    visibleHabits = habits.filter((habit) => habit.completedDates.includes(today));
+  }
+  if (filter === 'pending') {
+    visibleHabits = habits.filter((habit) => !habit.completedDates.includes(today));
+  }
 
-  const stats = useMemo(() => {
-    const total = habits.length;
-    const doneToday = habits.filter((habit) => habit.completedDates.includes(today)).length;
-    const completionRate = total ? Math.round((doneToday / total) * 100) : 0;
-    const bestStreak = habits.reduce(
-      (max, habit) => Math.max(max, calculateStreak(habit.completedDates)),
-      0,
-    );
-    return { total, doneToday, completionRate, bestStreak };
-  }, [habits, today]);
+  const total = habits.length;
+  const doneToday = habits.filter((habit) => habit.completedDates.includes(today)).length;
+  const completionRate = total ? Math.round((doneToday / total) * 100) : 0;
+  const bestStreak = habits.reduce(
+    (max, habit) => Math.max(max, calculateStreak(habit.completedDates)),
+    0,
+  );
+  const stats = { total, doneToday, completionRate, bestStreak };
 
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-8 md:px-8">

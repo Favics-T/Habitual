@@ -2,13 +2,11 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF } from 'react-icons/fa';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../context/auth-context';
 import Input from './component/Input';
 
-export default function SignUp() {
-  const { formData, handleInputChange, register } = useContext(AuthContext);
-
-  const Option = ({ icon, text }) => (
+function SocialOption({ icon, text }) {
+  return (
     <button
       type="button"
       className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 p-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
@@ -17,6 +15,10 @@ export default function SignUp() {
       <span>{text}</span>
     </button>
   );
+}
+
+export default function SignUp() {
+  const { formData, handleInputChange, register } = useContext(AuthContext);
 
   return (
     <div className="flex flex-col gap-6 text-slate-900">
@@ -24,8 +26,8 @@ export default function SignUp() {
         <h1 className="text-3xl font-bold">Create Account</h1>
         <p className="text-sm text-slate-500">Start building your daily momentum.</p>
         <div className="mt-4 flex gap-3">
-          <Option text="Google" icon={<FcGoogle />} />
-          <Option text="Facebook" icon={<FaFacebookF />} />
+          <SocialOption text="Google" icon={<FcGoogle />} />
+          <SocialOption text="Facebook" icon={<FaFacebookF />} />
         </div>
       </div>
 

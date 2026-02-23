@@ -1,104 +1,135 @@
-import React, { createContext, useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './auth-context';
 
+const USERS_KEY = 'habitual_users';
+const CURRENT_USER_KEY = 'habitual_current_user';
+const GOALS_KEY = 'habitual_goals';
 
-export const AuthContext = createContext();
+const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
 
+const saveUsers = (users) => {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+};
+
+const getGoals = () => JSON.parse(localStorage.getItem(GOALS_KEY) || '{}');
 
 export default function AuthProvider({ children }) {
   const navigate = useNavigate();
-
-  //  Current authenticated user state
   const [currentUser, setCurrentUser] = useState(() => {
-    const storedUser = localStorage.getItem('currentUser');
+    const storedUser = localStorage.getItem(CURRENT_USER_KEY);
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  //  Form state (generic, can be used for login or signup)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    company: ''
   });
 
-  //  Persist currentUser to localStorage
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('currentUser');
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+      return;
     }
+    localStorage.removeItem(CURRENT_USER_KEY);
   }, [currentUser]);
 
-  //  Update form input
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  };
 
-  //  Reset form
-  const resetForm = useCallback(() => {
-    setFormData({ name: '', email: '', password: '', company: '' });
-  }, []);
+  const resetForm = () => {
+    setFormData({ name: '', email: '', password: '' });
+  };
 
-  //  Login function
-  const login = useCallback((e) => {
+  const hasOnboardingGoal = (email) => {
+    const goals = getGoals();
+    return Boolean(goals[email]);
+  };
+
+  const register = (e) => {
     e.preventDefault();
+    const normalizedEmail = formData.email.trim().toLowerCase();
 
-    // Simulate fetching user from database (later: Supabase)
-    const storedUser = JSON.parse(localStorage.getItem('registeredUser'));
-
-    if (
-      storedUser &&
-      storedUser.email === formData.email &&
-      storedUser.password === formData.password
-    ) {
-      setCurrentUser(storedUser);
-      resetForm();
-      navigate('/home');
-    } else {
-      alert('Invalid email or password');
-    }
-  }, [formData, navigate, resetForm]);
-
-  //  Logout function
-  const logout = useCallback(() => {
-    setCurrentUser(null);
-    navigate('/login');
-  }, [navigate]);
-
-  //  Registration function
-  const register = useCallback((e) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (!formData.email || !formData.password) {
-      alert('Email and password required');
+    if (!formData.name.trim() || !normalizedEmail || !formData.password) {
+      alert('Name, email, and password are required.');
       return;
     }
 
-    // Save user in localStorage (Supabase will come in later)
-    localStorage.setItem('registeredUser', JSON.stringify(formData));
+    const users = getUsers();
+    const exists = users.some((user) => user.email === normalizedEmail);
+    if (exists) {
+      alert('An account with this email already exists.');
+      return;
+    }
 
-    setCurrentUser(formData);
+    const newUser = {
+      id: crypto.randomUUID(),
+      name: formData.name.trim(),
+      email: normalizedEmail,
+      password: formData.password,
+      createdAt: new Date().toISOString(),
+    };
+
+    saveUsers([...users, newUser]);
+    setCurrentUser(newUser);
     resetForm();
-    navigate('/home');
-  }, [formData, navigate, resetForm]);
+    navigate('/onboard1');
+  };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        formData,
-        handleInputChange,
-        resetForm,
-        currentUser,
-        login,
-        logout,
-        register
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const login = (e) => {
+    e.preventDefault();
+    const normalizedEmail = formData.email.trim().toLowerCase();
+    const users = getUsers();
+    const matchedUser = users.find((user) => user.email === normalizedEmail);
+
+    if (!matchedUser || matchedUser.password !== formData.password) {
+      alert('Invalid email or password.');
+      return;
+    }
+
+    setCurrentUser(matchedUser);
+    resetForm();
+    navigate(hasOnboardingGoal(matchedUser.email) ? '/dashboard' : '/onboard1');
+  };
+
+  const saveGoal = (goal) => {
+    if (!currentUser?.email) return;
+    const goals = getGoals();
+    localStorage.setItem(
+      GOALS_KEY,
+      JSON.stringify({
+        ...goals,
+        [currentUser.email]: goal,
+      }),
+    );
+  };
+
+  const getCurrentGoal = () => {
+    if (!currentUser?.email) return '';
+    return getGoals()[currentUser.email] || '';
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+    navigate('/login');
+  };
+
+  const value = {
+    formData,
+    handleInputChange,
+    resetForm,
+    currentUser,
+    isAuthenticated: Boolean(currentUser),
+    login,
+    logout,
+    register,
+    saveGoal,
+    getCurrentGoal,
+    hasOnboardingGoal,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

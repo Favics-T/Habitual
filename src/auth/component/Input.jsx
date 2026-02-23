@@ -14,8 +14,10 @@ function Input({ placeholder, value, name, type = "text", icon, onChange }) {
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`border p-2 outline-none text-[#222222] border-[#A6B28B] w-full rounded-xl 
-          ${icon ? "pl-10" : ""}`}
+        autoComplete={type === 'password' ? 'current-password' : 'on'}
+        className={`w-full rounded-xl border border-slate-200 p-2.5 text-slate-900 outline-none ring-emerald-500 focus:ring ${
+          icon ? 'pl-10' : ''
+        }`}
       />
     </div>
   );

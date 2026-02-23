@@ -1,69 +1,71 @@
-import React, { useContext } from 'react'
-import { AuthContext } from '../context/AuthContext'
-import Input from './component/Input'
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import Input from './component/Input';
+import { AuthContext } from '../context/auth-context';
+
+function SocialOption({ icon, text }) {
+  return (
+    <button
+      type="button"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 p-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+    >
+      <span className="text-lg">{icon}</span>
+      <span>{text}</span>
+    </button>
+  );
+}
 
 export default function Login() {
-    const {formData,handleInputChange,login} = useContext(AuthContext)
- 
-    const Option =({icon, text})=>{
-        return(
-        <div className='border  border-[#A6B28B] text-[#1C352D] justify-center w-full rounded-xl text-lg font-bold items-center gap-4 flex p-1'>
-                <h1 className='text-lg'>{icon}</h1>
-                <h1 className='text-sm'>{text}</h1>
-        </div>)
-    }
- 
-    return (
-    <div className='flex flex-col gap-8 text-[#222222] '>
+  const { formData, handleInputChange, login } = useContext(AuthContext);
 
-        <div className='flex flex-col gap-4'>
-            <h1 className='font-bold text-2xl'>Welcome Back</h1>
-            <p className='text-sm text-gray-500'>Login with one of the following options</p>
-
-                <div className='flex gap-8 w-full'>
-                    <Option text='Continue With Google' icon={<FcGoogle />} />
-            <Option text='Continue With Facebook' icon={<FaFacebookF />}/>
-                </div>
-            
+  return (
+    <div className="flex flex-col gap-6 text-slate-900">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Welcome Back</h1>
+        <p className="text-sm text-slate-500">Log in and continue your habit streak.</p>
+        <div className="mt-4 flex gap-3">
+          <SocialOption text="Google" icon={<FcGoogle />} />
+          <SocialOption text="Facebook" icon={<FaFacebookF />} />
         </div>
+      </div>
 
-        <div class="flex items-center">
-  <hr class="grow border-gray-300" />
-  <span class="px-4 text-gray-500 font-medium">OR</span>
-  <hr class="grow border-gray-300" />
-</div>
+      <div className="flex items-center">
+        <hr className="grow border-slate-200" />
+        <span className="px-3 text-xs font-semibold text-slate-400">OR</span>
+        <hr className="grow border-slate-200" />
+      </div>
 
-<form onSubmit={login} className="flex flex-col gap-8">
-  <Input
-    name="email"
-    type="email"
-    value={formData.email}
-    placeholder="rachealwoods@gmail.com"
-    onChange={handleInputChange}
-  />
-  <Input
-    name="password"
-    type="password"
-    value={formData.password}
-    placeholder="Enter password"
-    onChange={handleInputChange}
-  />
-  <button
-    type="submit"
-    className="bg-[#1C352D] p-2 text-white rounded-2xl font-semibold"
-  >
-    Login
-  </button>
-</form>
+      <form onSubmit={login} className="flex flex-col gap-4">
+        <Input
+          name="email"
+          type="email"
+          value={formData.email}
+          placeholder="Enter your email"
+          onChange={handleInputChange}
+        />
+        <Input
+          name="password"
+          type="password"
+          value={formData.password}
+          placeholder="Enter your password"
+          onChange={handleInputChange}
+        />
+        <button
+          type="submit"
+          className="rounded-xl bg-emerald-700 p-2.5 font-semibold text-white transition hover:bg-emerald-800"
+        >
+          Login
+        </button>
+      </form>
 
-
-    <p className='text-center'>No Account? <Link to='/signup'><span className='text-lg font-bold text-[#1c352d]'>Sign up</span></Link></p>
-
-
+      <p className="text-center text-sm text-slate-600">
+        No account?{' '}
+        <Link to="/signup" className="font-bold text-emerald-700">
+          Sign up
+        </Link>
+      </p>
     </div>
-    
-  )
+  );
 }

@@ -4,7 +4,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
   const progress = Math.min(100, Math.max(0, Math.round((currentStep / totalSteps) * 100)));
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md px-1 sm:px-0">
       <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-500">
         <span>Step {currentStep}</span>
         <span>{progress}%</span>

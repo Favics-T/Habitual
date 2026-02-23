@@ -23,12 +23,14 @@ export default function OnboardingStep() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-10">
-      <div className="mx-auto max-w-2xl rounded-3xl bg-white p-8 text-center shadow-sm">
-        <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">
+    <div className="min-h-screen bg-slate-100 px-4 py-6 sm:py-10">
+      <div className="mx-auto max-w-2xl rounded-2xl bg-white p-5 text-center shadow-sm sm:rounded-3xl sm:p-8">
+        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl md:text-3xl">
           Build better routines with Habitual
         </h1>
-        <p className="mt-3 text-slate-600">Pick a goal so we can personalize your dashboard.</p>
+        <p className="mt-3 text-sm text-slate-600 sm:text-base">
+          Pick a goal so we can personalize your dashboard.
+        </p>
 
         <div className="mt-6 flex justify-center">
           <ProgressBar currentStep={1} totalSteps={2} />
@@ -46,7 +48,7 @@ export default function OnboardingStep() {
           ))}
         </div>
 
-        <div className="mx-auto mt-8 flex w-full max-w-md gap-3">
+        <div className="mx-auto mt-8 grid w-full max-w-md grid-cols-1 gap-3 sm:grid-cols-2">
           <button
             type="button"
             onClick={() => navigate('/dashboard')}

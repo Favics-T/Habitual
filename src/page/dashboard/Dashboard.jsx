@@ -1,9 +1,10 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../context/auth-context';
 
 const HABITS_KEY = 'habitual_habits';
 const SHARED_SNAPSHOTS_KEY = 'habitual_shared_snapshots';
 const FRIENDS_KEY = 'habitual_friends';
+const THEME_KEY = 'habitual_theme';
 
 const getToday = () => new Date().toISOString().slice(0, 10);
 
@@ -162,10 +163,16 @@ export default function Dashboard() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('created_desc');
   const [friendName, setFriendName] = useState('');
+  const [theme, setTheme] = useState(() => localStorage.getItem(THEME_KEY) || 'light');
   const fileInputRef = useRef(null);
   const today = getToday();
 
   const goal = getCurrentGoal();
+  const isDark = theme === 'dark';
+
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
 
   const upsertHabits = (nextHabits) => {
     setHabits(nextHabits);
@@ -403,7 +410,11 @@ export default function Dashboard() {
     .slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-slate-100 px-3 py-6 sm:px-4 sm:py-8 md:px-8">
+    <div
+      className={`min-h-screen px-3 py-6 transition-colors sm:px-4 sm:py-8 md:px-8 ${
+        isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-100 text-slate-900'
+      }`}
+    >
       <div className="mx-auto max-w-6xl space-y-6">
         <header className="rounded-2xl bg-linear-to-r from-emerald-700 to-teal-600 p-4 text-white shadow-lg sm:rounded-3xl sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -417,6 +428,13 @@ export default function Dashboard() {
               )}
             </div>
             <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+                className="rounded-xl bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur hover:bg-white/30"
+              >
+                {isDark ? 'Light Mode' : 'Dark Mode'}
+              </button>
               <button
                 type="button"
                 onClick={handleExportSnapshot}
@@ -436,37 +454,37 @@ export default function Dashboard() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-          <article className="rounded-2xl bg-white p-4 shadow-sm lg:col-span-1">
-            <p className="text-sm text-slate-500">Total Habits</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.total}</h2>
+          <article className={`rounded-2xl p-4 shadow-sm lg:col-span-1 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Total Habits</p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{stats.total}</h2>
           </article>
-          <article className="rounded-2xl bg-white p-4 shadow-sm lg:col-span-1">
-            <p className="text-sm text-slate-500">Completed Today</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.doneToday}</h2>
+          <article className={`rounded-2xl p-4 shadow-sm lg:col-span-1 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Completed Today</p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{stats.doneToday}</h2>
           </article>
-          <article className="rounded-2xl bg-white p-4 shadow-sm lg:col-span-1">
-            <p className="text-sm text-slate-500">Best Streak</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.bestStreak}</h2>
+          <article className={`rounded-2xl p-4 shadow-sm lg:col-span-1 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Best Streak</p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{stats.bestStreak}</h2>
           </article>
-          <article className="rounded-2xl bg-white p-4 shadow-sm lg:col-span-1">
-            <p className="text-sm text-slate-500">Weekly Completions</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.weekCompletions}</h2>
+          <article className={`rounded-2xl p-4 shadow-sm lg:col-span-1 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Weekly Completions</p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{stats.weekCompletions}</h2>
           </article>
-          <article className="rounded-2xl bg-white p-4 shadow-sm lg:col-span-1">
-            <p className="text-sm text-slate-500">Daily Completion</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.completionRate}%</h2>
+          <article className={`rounded-2xl p-4 shadow-sm lg:col-span-1 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Daily Completion</p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{stats.completionRate}%</h2>
           </article>
-          <article className="rounded-2xl bg-white p-4 shadow-sm lg:col-span-1">
-            <p className="text-sm text-slate-500">Consistency Score</p>
-            <h2 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{stats.consistency}%</h2>
+          <article className={`rounded-2xl p-4 shadow-sm lg:col-span-1 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Consistency Score</p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{stats.consistency}%</h2>
           </article>
         </section>
 
         <section className="grid gap-4 lg:grid-cols-3">
-          <article className="rounded-2xl bg-white p-5 shadow-sm lg:col-span-2">
+          <article className={`rounded-2xl p-5 shadow-sm lg:col-span-2 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-slate-900">14-Day Consistency</h2>
-              <p className="text-xs text-slate-500">Darker = more completions</p>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Darker = more completions</p>
             </div>
             <div className="mt-4 grid grid-cols-7 gap-2">
               {heatmap.map((item) => (
@@ -475,13 +493,13 @@ export default function Dashboard() {
                     className={`h-7 rounded-md ${getHeatColor(item.count)}`}
                     title={`${item.date}: ${item.count} completions`}
                   />
-                  <p className="text-[10px] text-slate-500">{item.date.slice(5)}</p>
+                  <p className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.date.slice(5)}</p>
                 </div>
               ))}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {badges.length === 0 && (
-                <p className="text-sm text-slate-500">No badges yet. Keep completing habits daily.</p>
+                <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>No badges yet. Keep completing habits daily.</p>
               )}
               {badges.map((badge) => (
                 <span
@@ -494,33 +512,37 @@ export default function Dashboard() {
             </div>
           </article>
 
-          <article className="rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-900">Friends Leaderboard</h2>
-            <p className="mt-1 text-xs text-slate-500">
+          <article className={`rounded-2xl p-5 shadow-sm ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <h2 className={`text-lg font-semibold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Friends Leaderboard</h2>
+            <p className={`mt-1 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               No backend: share/export snapshot JSON and import each other&apos;s files.
             </p>
             <div className="mt-3 space-y-2">
               {leaderboard.map((entry, index) => (
-                <div key={`${entry.ownerEmail}-${entry.ownerName}-${index}`} className="rounded-xl bg-slate-50 p-3">
+                <div key={`${entry.ownerEmail}-${entry.ownerName}-${index}`} className={`rounded-xl p-3 ${isDark ? 'bg-slate-800' : 'bg-slate-50'}`}>
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className={`text-sm font-semibold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
                       {index + 1}. {entry.ownerName}
                     </p>
                     <p className="text-sm font-bold text-emerald-700">{entry.weekCompletions}</p>
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     Habits: {entry.totalHabits} | Updated: {formatDate(entry.generatedAt)}
                   </p>
                 </div>
               ))}
               {leaderboard.length === 1 && (
-                <p className="text-sm text-slate-500">Import a friend snapshot to compare progress.</p>
+                <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Import a friend snapshot to compare progress.</p>
               )}
             </div>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="mt-4 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className={`mt-4 w-full rounded-xl border px-3 py-2 text-sm font-semibold ${
+                isDark
+                  ? 'border-slate-700 text-slate-200 hover:bg-slate-800'
+                  : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+              }`}
             >
               Import Friend Snapshot
             </button>
@@ -534,8 +556,8 @@ export default function Dashboard() {
           </article>
         </section>
 
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900">
+        <section className={`rounded-2xl p-5 shadow-sm ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+          <h2 className={`text-xl font-semibold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
             {editingId ? 'Edit Habit' : 'Add New Habit'}
           </h2>
           <form
@@ -546,18 +568,24 @@ export default function Dashboard() {
               value={form.name}
               onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
               placeholder="Habit name"
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             />
             <input
               value={form.category}
               onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
               placeholder="Category"
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             />
             <select
               value={form.frequency}
               onChange={(e) => setForm((prev) => ({ ...prev, frequency: e.target.value }))}
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -565,7 +593,9 @@ export default function Dashboard() {
             <select
               value={form.priority}
               onChange={(e) => setForm((prev) => ({ ...prev, priority: e.target.value }))}
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             >
               <option value="low">Low priority</option>
               <option value="medium">Medium priority</option>
@@ -575,13 +605,17 @@ export default function Dashboard() {
               type="time"
               value={form.reminderTime}
               onChange={(e) => setForm((prev) => ({ ...prev, reminderTime: e.target.value }))}
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             />
             <input
               value={form.notes}
               onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
               placeholder="Notes or why this habit matters"
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring md:col-span-2 xl:col-span-2"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring md:col-span-2 xl:col-span-2 ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             />
             <div className="flex gap-2 md:col-span-2 xl:col-span-4">
               <button
@@ -597,7 +631,11 @@ export default function Dashboard() {
                     setEditingId('');
                     resetForm();
                   }}
-                  className="rounded-xl border border-slate-300 px-3 py-2 font-semibold text-slate-700 hover:bg-slate-100"
+                  className={`rounded-xl border px-3 py-2 font-semibold ${
+                    isDark
+                      ? 'border-slate-700 text-slate-200 hover:bg-slate-800'
+                      : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                  }`}
                 >
                   Cancel
                 </button>
@@ -606,18 +644,22 @@ export default function Dashboard() {
           </form>
         </section>
 
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <section className={`rounded-2xl p-5 shadow-sm ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search habits, categories, notes..."
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring lg:col-span-2"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring lg:col-span-2 ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             >
               <option value="created_desc">Newest first</option>
               <option value="streak_desc">Highest streak</option>
@@ -643,10 +685,10 @@ export default function Dashboard() {
         </section>
 
         <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">Today&apos;s Habits</h2>
+          <h2 className={`text-lg font-semibold sm:text-xl ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Today&apos;s Habits</h2>
           <div className="mt-4 space-y-3">
             {visibleHabits.length === 0 && (
-              <p className="rounded-xl bg-slate-50 p-4 text-slate-500">
+              <p className={`rounded-xl p-4 ${isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-500'}`}>
                 No habits in this filter.
               </p>
             )}
@@ -657,21 +699,27 @@ export default function Dashboard() {
               return (
                 <article
                   key={habit.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  className={`flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between ${
+                    isDark ? 'border-slate-700 bg-slate-900/40' : 'border-slate-200'
+                  }`}
                 >
                   <div className="min-w-0 flex-1">
                     <h3
                       className={`text-sm font-semibold sm:text-base ${
-                        isDoneToday ? 'text-slate-400 line-through' : 'text-slate-900'
+                        isDoneToday
+                          ? 'text-slate-500 line-through'
+                          : isDark
+                            ? 'text-slate-100'
+                            : 'text-slate-900'
                       }`}
                     >
                       {habit.name}
                     </h3>
-                    <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+                    <p className={`mt-1 text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                       {habit.category} | {habit.frequency} | Priority: {habit.priority || 'medium'} | Streak: {streak} day
                       {streak === 1 ? '' : 's'}
                     </p>
-                    {habit.notes && <p className="mt-1 text-xs text-slate-600">{habit.notes}</p>}
+                    {habit.notes && <p className={`mt-1 text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{habit.notes}</p>}
                     {(habit.reminderTime || reminderStatus) && (
                       <p className="mt-1 text-xs text-amber-700">
                         Reminder: {habit.reminderTime || '--:--'} {reminderStatus ? `| ${reminderStatus}` : ''}
@@ -712,9 +760,9 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">Friends List (Local)</h2>
-          <p className="mt-1 text-xs text-slate-500">
+        <section className={`rounded-2xl p-5 shadow-sm ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+          <h2 className={`text-lg font-semibold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>Friends List (Local)</h2>
+          <p className={`mt-1 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Keep your small private circle here. This list stays only in local storage.
           </p>
           <form onSubmit={handleAddFriend} className="mt-3 flex flex-col gap-2 sm:flex-row">
@@ -722,7 +770,9 @@ export default function Dashboard() {
               value={friendName}
               onChange={(e) => setFriendName(e.target.value)}
               placeholder="Add friend name"
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 outline-none ring-emerald-500 focus:ring"
+              className={`w-full rounded-xl border px-3 py-2 outline-none ring-emerald-500 focus:ring ${
+                isDark ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-slate-200'
+              }`}
             />
             <button
               type="submit"
@@ -732,13 +782,19 @@ export default function Dashboard() {
             </button>
           </form>
           <div className="mt-3 flex flex-wrap gap-2">
-            {friends.length === 0 && <p className="text-sm text-slate-500">No friends added yet.</p>}
+            {friends.length === 0 && (
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>No friends added yet.</p>
+            )}
             {friends.map((friend) => (
               <button
                 key={friend}
                 type="button"
                 onClick={() => removeFriend(friend)}
-                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  isDark
+                    ? 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
               >
                 {friend} x
               </button>
